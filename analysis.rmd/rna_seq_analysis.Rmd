@@ -1,0 +1,148 @@
+---
+title: "Bulk_RNA_SEQ"
+author: "Jana Elhelw"
+date: "2025-09-25"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r set-working-directory, include=FALSE}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+#  Introduction
+
+This project analyzes gene expression differences between **POU3F2** and **SOX1** knockouts in cortical brain hipsc organoids using RNA-seq. It includes:
+
+* Differential expression analysis using DESeq2
+* GO enrichment analysis using:
+
+  * Over-representation analysis (ORA)
+  * Gene Set Enrichment Analysis (GSEA)
+
+
+# Exploratory Data Analysis (EDA)
+
+Used the variance-stabilized transformed data (`vst`) to inspect library quality and relationships between samples.
+
+### Library Size Barplot
+
+```{r libsize, echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/LibrarySizes_barplot.png")
+```
+Observation: All samples had comparable total reads, indicating balanced sequencing depth.
+
+### Principal Component Analysis (PCA)
+
+```{r echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/PCA_plot.png")
+```
+
+Interpretation: Samples cluster by transcription factor knockout condition.
+
+### sample distance heatmap
+
+```{r echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/SampleDistance_heatmap.png")
+```
+
+Interpretation: Replicates of the same KO condition cluster tightly. SOX1 KO is most divergent from the others.
+
+### Top 20 variable genes heatmap
+
+```{r echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/Top20Genes_heatmap.png")
+```
+
+Interpretation: Expression of top variable genes separates the KO groups. SOX1 is again the most distinct.
+
+### MA Plots
+## MA plot for HES5 vs POU3F2
+
+```{r ma-hes5-pou3f2, echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/MAplot_HES5_vs_POU3F2.png")
+```
+
+## MA plot for HES5 vs SOX1
+```{r echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/MAplot_HES5_vs_SOX1.png")
+```
+
+## MA plot for POU3F2 vs SOX1
+```{r echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/DEGs/plots/MAplot_POU3F2_vs_SOX1.png")
+```
+Interpretation: MA plots show that SOX1 KO samples are most distinct (huge number of DE genes). 
+HES5 vs POU3F2 is the most similar comparison (few DE genes) while POU3F2 vs SOX1 show the highest contrast, so this comparison was used for further analysis.
+
+
+#  Differential Expression Analysis (DESeq2)
+
+```{r load-DEGs, message=FALSE, echo=FALSE}
+res_pou3f2_sox1 <- read.csv("C:\\R_projects\\bulk RNA seq\\results\\DEGs\\POU3F2_vs_SOX1_DEGs.csv")
+head(res_pou3f2_sox1)
+```
+
+DE results table for POU3F2 vs SOX1 comparison.
+Used **padj < 0.05** to select significant DEGs.
+
+
+# GO Enrichment — ORA
+
+ORA was performed using `enrichGO()` from the `clusterProfiler` package on significant DEGs.
+
+```{r ora-dotplot, echo=FALSE}
+knitr::include_graphics("C:\\R_projects\\bulk RNA seq\\results\\enrichment\\GO_BP_dotplot_top10.png")
+```
+
+### Findings:
+
+* Ribosome biogenesis
+* rRNA processing
+* Cell division (chromatid segregation)
+* Forebrain development
+
+These suggest increased translation and neural activity in **POU3F2**.
+
+
+
+# GSEA Analysis (fgsea)
+
+Ranked all genes by log2FoldChange for GSEA using GO Biological Processes.
+
+## Pathway upregulated in POU3F2
+
+```{r gsea-pou3f2, echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/enrichment/FGSEA_enrichment_plot_top.png")
+```
+
+* Pathway: **Central nervous system neuron differentiation**
+* NES > 0 → upregulated in POU3F2
+
+## Pathway upregulated in SOX1
+
+```{r gsea-sox1, echo=FALSE}
+knitr::include_graphics("C:/R_projects/bulk RNA seq/results/enrichment/FGSEA_enrichment_plot_top_SOX1_upregulated.png")
+```
+
+* Pathway: **Regulation of cell killing**
+* NES < 0 → upregulated in SOX1
+
+
+
+# Conclusion
+
+* **POU3F2**-expressing cells upregulate pathways related to **neurogenesis** and **translation**
+* **SOX1**-expressing cells upregulate genes involved in **apoptosis** and **progenitor maintenance**
+
+
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
+
