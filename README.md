@@ -26,9 +26,6 @@ Bulk RNA seq for hipsc cortical brain organoids with 8 different TF KOs. Analyze
   - `MAplot_*` (one per contrast)
   - `Top20VarGenes_heatmap.png`
 
-## Reproducibility
-- Main script: `scripts/DESeq2_analysis.R`
-- R version / packages: DESeq2, pheatmap, AnnotationDbi, org.Hs.eg.db
 
 --------------------------------------------------
 ## PART 2: Enrichemnt analysis
@@ -78,7 +75,6 @@ GO: Central nervous system neuron differentiation
 (NES = 2.22, padj = 1.66e-09)
 
 This indicates that genes promoting neuronal differentiation are more active in POU3F2-expressing cells, consistent with its role in promoting neurogenesis.
-
 Conversely, pathways upregulated in SOX1 included several cell cycle and stemness-related processes, suggesting maintenance of a progenitor-like state.
 
 The pathway “Regulation of Cell Killing” (GO:BP) was significantly enriched in genes upregulated in SOX1, with genes clustering at the bottom of the ranked list (NES = negative, padj < 0.05).
